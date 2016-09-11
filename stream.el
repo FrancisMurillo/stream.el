@@ -136,6 +136,10 @@ and the cdr being a stream reflecting the wrapped one."
               (car stream-values)
             (setq stream-values (cdr stream-values)))))))))
 
+(defun stream-stopped ()
+  "A stream that always return the end of signal."
+  (lambda (&rest _) stream-stop))
+
 (defun stream-cycle (n stream)
   "Repeat the stream values N times of a STREAM."
   (lexical-let ((repeating nil)
@@ -143,7 +147,7 @@ and the cdr being a stream reflecting the wrapped one."
       (stored-values (list))
       (current-values nil))
     (if (zerop n)
-        (transducer-stopped-stream)
+        (stream-stopped)
       (stream
        (lambda (&rest args)
          (if (null repeating)
