@@ -105,10 +105,6 @@ when the function stops producing values."
       (setq value (funcall stream)))
     (reverse xs)))
 
-(defun transducer-stopped-stream ()
-  "A stream that always return the end of signal."
-  (lambda (&rest _) stream-stop))
-
 
 (defconst stream-empty 'stream-empty
   "A value indicating a stream is empty.
