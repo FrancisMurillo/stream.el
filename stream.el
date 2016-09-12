@@ -46,6 +46,7 @@
 ;;; Code:
 
 (eval-when-compile (require 'cl))
+
 (require 'dash)
 
 
@@ -84,6 +85,7 @@ when the function stops producing values."
             value
           (setq value (apply streamer args))))))))
 
+
 (defun stream-from-list (xs)
   "Create a stream from a list XS."
   (lexical-let ((ys xs))
@@ -94,6 +96,18 @@ when the function stops producing values."
          (prog1
              (car ys)
            (setq ys (cdr ys))))))))
+
+(defun stream-from-vector (array)
+  "Create a stream from a vector ARRAY."
+  (lexical-let ((index 0)
+                (size (length array)))
+    (stream
+     (lambda (&rest _)
+       (if (>= index size)
+           stream-stop
+         (prog1
+             (aref array index)
+           (setq index (1+ index))))))))
 
 (defun stream-to-list (stream)
   "Unroll a STREAM for convenience."

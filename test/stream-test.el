@@ -47,14 +47,14 @@
 
 (ert-deftest stream-test/base ()
   (lexical-let* ((index 0)
-      (stream
-       (stream
-        (lambda ()
-          (if (= index 10)
-              stream-stop
-            (prog1
-                index
-              (setq index (1+ index))))))))
+                 (stream
+                  (stream
+                   (lambda ()
+                     (if (= index 10)
+                         stream-stop
+                       (prog1
+                           index
+                         (setq index (1+ index))))))))
     (should (stream-start-value-p (funcall stream)))
 
     (should (= 0 (funcall stream)))
@@ -72,10 +72,10 @@
 
 (ert-deftest stream-test/from-list ()
   (let* ((first "first")
-      (second 'a)
-      (third -1)
-      (xs (list first second third))
-      (stream (stream-from-list xs)))
+         (second 'a)
+         (third -1)
+         (xs (list first second third))
+         (stream (stream-from-list xs)))
     (should (stream-start-value-p (funcall stream)))
 
     (should (string-equal first (funcall stream)))
@@ -85,6 +85,24 @@
     (should (stream-stop-value-p (funcall stream))))
 
   (let ((stream (stream-from-list (list))))
+    (should (stream-start-value-p (funcall stream)))
+    (should (stream-stop-value-p (funcall stream)))))
+
+(ert-deftest stream-test/from-vector ()
+  (let* ((first "first")
+         (second 'a)
+         (third -1)
+         (xs (vector first second third))
+         (stream (stream-from-vector xs)))
+    (should (stream-start-value-p (funcall stream)))
+
+    (should (string-equal first (funcall stream)))
+    (should (eq second (funcall stream)))
+    (should (= third (funcall stream)))
+
+    (should (stream-stop-value-p (funcall stream))))
+
+  (let ((stream (stream-from-vector (vector))))
     (should (stream-start-value-p (funcall stream)))
     (should (stream-stop-value-p (funcall stream)))))
 
@@ -103,15 +121,15 @@
 
 (ert-deftest stream-test/append ()
   (let* ((first (list 1 2 3))
-      (second (list))
-      (third (list 4 5))
-      (all (append first second third))
-      (stream
-       (stream-append
-        (stream-from-list first)
-        (stream-from-list second)
-        (stream-from-list third)))
-      (values (stream-to-list stream)))
+         (second (list))
+         (third (list 4 5))
+         (all (append first second third))
+         (stream
+          (stream-append
+           (stream-from-list first)
+           (stream-from-list second)
+           (stream-from-list third)))
+         (values (stream-to-list stream)))
     (should
      (list-equal
       #'=
@@ -120,10 +138,10 @@
 
 (ert-deftest stream-test/copy ()
   (let* ((xs (list 1 2 3))
-      (empty-value 'empty)
-      (copied-streams (stream-copy empty-value (stream-from-list xs)))
-      (base-stream (car copied-streams))
-      (copied-stream (cdr copied-streams)))
+         (empty-value 'empty)
+         (copied-streams (stream-copy empty-value (stream-from-list xs)))
+         (base-stream (car copied-streams))
+         (copied-stream (cdr copied-streams)))
     (should (stream-start-value-p (funcall copied-stream)))
     (should (stream-start-value-p (funcall base-stream)))
 
@@ -131,15 +149,15 @@
     (should (eq empty-value (funcall copied-stream)))
 
     (let ((value (funcall base-stream))
-        (copy-value (funcall copied-stream)))
+          (copy-value (funcall copied-stream)))
       (should (eq empty-value copy-value))
       (setq copy-value (funcall copied-stream))
 
       (should (= value copy-value)))
 
     (let ((value (funcall base-stream))
-        (next-value (funcall base-stream))
-        (copy-value (funcall copied-stream)))
+          (next-value (funcall base-stream))
+          (copy-value (funcall copied-stream)))
       (should (eq empty-value copy-value))
       (setq copy-value (funcall copied-stream))
 
@@ -149,14 +167,14 @@
       (should (= next-value copy-value)))
 
     (let ((value (funcall base-stream))
-        (copy-value (funcall copied-stream)))
+          (copy-value (funcall copied-stream)))
       (should (stream-stop-value-p value))
       (should (stream-stop-value-p value))))
   (let* ((xs (list 1 2 3))
-      (empty-value 'empty)
-      (copied-streams (stream-copy empty-value (stream-from-list xs)))
-      (base-stream (car copied-streams))
-      (copied-stream (cdr copied-streams)))
+         (empty-value 'empty)
+         (copied-streams (stream-copy empty-value (stream-from-list xs)))
+         (base-stream (car copied-streams))
+         (copied-stream (cdr copied-streams)))
     (should
      (list-equal
       #'=
