@@ -47,8 +47,6 @@
 
 (eval-when-compile (require 'cl))
 
-(require 'dash)
-
 (require 'stream (expand-file-name "stream" "./"))
 
 (defun list-equal (equality xs ys)

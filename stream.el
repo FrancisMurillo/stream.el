@@ -47,9 +47,6 @@
 
 (eval-when-compile (require 'cl))
 
-(require 'dash)
-
-
 ;;* Stream
 (defconst stream-start 'stream-start
   "A value signifying the start of a stream.
